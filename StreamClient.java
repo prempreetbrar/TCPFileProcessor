@@ -1,4 +1,3 @@
-
 /**
  * StreamClient Class
  *
@@ -14,6 +13,7 @@ import java.util.logging.*;
 public class StreamClient {
 
     private static final Logger logger = Logger.getLogger("StreamClient"); // global logger
+    private static final int EOF = -1;
     private final String SERVER_NAME;
     private final int SERVER_PORT;
     private final int BUFFER_SIZE;
@@ -38,18 +38,16 @@ public class StreamClient {
      * @param outName name of the output file
      */
     public void getService(int serviceCode, String inName, String outName) {
-        final int EOF = -1;
-        byte[] buffer = new byte[this.BUFFER_SIZE];
-        int numBytes = 0;
-
         Socket socket = null;
         InputStream inputStream = null;
         OutputStream outputStream = null;
         FileInputStream fileInputStream = null;
         FileOutputStream fileOutputStream = null;
+        Thread sendFileToServer = null;
+        Thread readFileFromServer = null;
 
         try {
-            socket = new Socket(this.SERVER_NAME, this.SERVER_PORT);
+            socket = new Socket(SERVER_NAME, SERVER_PORT);
             inputStream = socket.getInputStream();
             outputStream = socket.getOutputStream();
 
@@ -60,30 +58,77 @@ public class StreamClient {
             outputStream.write(serviceCode);
             outputStream.flush();
 
-            while ((numBytes = fileInputStream.read(buffer)) != EOF) {
-                outputStream.write(buffer, 0, numBytes);
-                System.out.println("W " + numBytes);
-                outputStream.flush();
-            }
-            socket.shutdownOutput();
-
-            while ((numBytes = inputStream.read(buffer)) != EOF) {
-                System.out.println("R " + numBytes);
-                fileOutputStream.write(buffer, 0, numBytes);
-                fileOutputStream.flush();
-            }
+            sendFileToServer =
+                sendFileToServer(fileInputStream, socket, outputStream);
+            readFileFromServer =
+                readFileFromServer(inputStream, fileOutputStream);
+            sendFileToServer.start();
+            readFileFromServer.start();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
             try {
+                sendFileToServer.join();
+                readFileFromServer.join();
+
                 fileOutputStream.close();
                 fileInputStream.close();
                 outputStream.close();
                 inputStream.close();
                 socket.close();
-            } catch (IOException e) {
+            } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    private Thread sendFileToServer(
+        FileInputStream fileInputStream,
+        Socket socket,
+        OutputStream outputStream
+    ) {
+        Thread sendFileToServer = new Thread() {
+            public void run() {
+                int numBytes = 0;
+                byte[] buffer = new byte[StreamClient.this.BUFFER_SIZE];
+
+                try {
+                    while ((numBytes = fileInputStream.read(buffer)) != EOF) {
+                        outputStream.write(buffer, 0, numBytes);
+                        System.out.println("W " + numBytes);
+                        outputStream.flush();
+                    }
+                    socket.shutdownOutput();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        return sendFileToServer;
+    }
+
+    private Thread readFileFromServer(
+        InputStream inputStream,
+        FileOutputStream fileOutputStream
+    ) {
+        Thread readFileFromServer = new Thread() {
+            public void run() {
+                int numBytes = 0;
+                byte[] buffer = new byte[StreamClient.this.BUFFER_SIZE];
+
+                try {
+                    while ((numBytes = inputStream.read(buffer)) != EOF) {
+                        System.out.println("R " + numBytes);
+                        fileOutputStream.write(buffer, 0, numBytes);
+                    }
+                    fileOutputStream.flush();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        return readFileFromServer;
     }
 }
