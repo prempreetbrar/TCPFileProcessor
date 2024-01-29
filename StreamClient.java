@@ -1,9 +1,11 @@
 /**
  * StreamClient Class
  *
- * CPSC 441
+ * CPSC 441 - L01 - T01
  * Assignment 1
- * Prempreet Brar
+ * 
+ * TA: Amir Shani
+ * Student: Prempreet Brar
  * UCID: 30112576
  *
  * This class initiates a TCP connection to a remote server, reads the contents of a given file,
@@ -75,8 +77,8 @@ public class StreamClient {
      */
     private void joinGracefully(Thread... threads) {
         /*
-         * We need to surround this with a try-catch block because the closing itself can raise
-         * an IOException. In this case, if closing fails, there is nothing else we can do. We must also
+         * We need to surround this with a try-catch block because the joining itself can raise
+         * an InterruptedException. In this case, if joining fails, there is nothing else we can do. We must also
          * ensure that the thread is not null. This is because other parts of the program instantiate a Thread
          * variable to null before reassignment.
          */
