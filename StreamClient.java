@@ -1,13 +1,6 @@
 /**
  * StreamClient Class
  *
- * CPSC 441 - L01 - T01
- * Assignment 1
- * 
- * TA: Amir Shani
- * Student: Prempreet Brar
- * UCID: 30112576
- *
  * This class initiates a TCP connection to a remote server, reads the contents of a given file,
  * sends it to the server for processing, receives the processed file content, and then saves it to
  * a new file in the local file system.

@@ -2,10 +2,6 @@
 /**
  * A simple driver for StreamClient class
  * 
- * CPSC 441
- * Assignment 1
- * 
- * 
  * The following command line arguments can be passed to the driver:
  * 
  * -i	to specify the name of the input file. this argument is REQUIRED.
@@ -20,11 +16,6 @@
  * -p 	to specify the server port number.
  * -s	to specify the server name
  * -v	to specify the log level
- * 
- * 
- * @author 	Majid Ghaderi
- * @version 2024
- *
  */
 
 
