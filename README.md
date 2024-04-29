@@ -3,7 +3,7 @@
 A program that establishes a TCP connection with a remote server, sends a local file to the server for processing, and receives
 and stores the processed file in the local file system. Watch a GIF of me interacting with it below!
 
-
+![client](https://github.com/prempreetbrar/TCPFileProcessor/assets/89614923/4634f5d6-241c-44a0-a310-47235c4fd62f)
 &nbsp;
 
 ## Features
@@ -36,35 +36,46 @@ program; the client closes its side of the connection after the entire file is s
 
 ### When Running the Server:
 - `-p <port_number>` specifies the server's port; default is `2025`; **the `-p` flags should match when running both the client and server. Otherwise, the client will be unable to connect.**
-- `-b <buffer_size>` specifies the buffer size (in bytes) used at the server for read/write operations; default is `1000`. 
+- `-b <buffer_size>` specifies the buffer size (in bytes) used at the server for read/write operations; default is `1000`.
+- `quit` shuts the server down if it is already running. 
 
 ## If you want to start up the project on your local machine:
 1. Download the code as a ZIP:
 <br></br>
-
+![download](https://github.com/prempreetbrar/TCPFileProcessor/assets/89614923/55d0cd94-ae70-4650-9fb1-dffdda491cd2)
 &nbsp;
 
 2. Unzip the code:
 <br></br>
-![unzip](https://github.com/prempreetbrar/TCPWebServer/assets/89614923/e2283434-6b61-41a1-b9b9-bb6380900798)
+![unzip](https://github.com/prempreetbrar/TCPFileProcessor/assets/89614923/5f2c3b0f-da1d-4ffe-90c5-91f50cd8dc83)
 &nbsp;
 
 3. Open the folder in an IDE, such as VSCode:
 <br></br>
-![open](https://github.com/prempreetbrar/TCPWebServer/assets/89614923/aa1e0040-15af-4697-b9ab-52104b28e5b4)
+![open](https://github.com/prempreetbrar/TCPFileProcessor/assets/89614923/612c3273-386f-4ae7-bbbc-ac837ae989b3)
 &nbsp;
 
-4. Start the server by compiling all files and then running `ServerDriver.java`, as follows:
+4. Start the server by running `streamserver.jar`, as follows:
    ```
-   javac *.java
-   java ServerDriver -p <port_number> -t <idle_connection_timeout> -r <server_root>
+   cd server
+   java -jar streamserver.jar
+         [-b <buffer_size>]
+         [-p <port_number>]
    ```
 <br></br>
-![server](https://github.com/prempreetbrar/TCPWebServer/assets/89614923/51398c4c-fa7b-4867-b6b9-0b3d40d2bf55)
+![server](https://github.com/prempreetbrar/TCPFileProcessor/assets/89614923/e107e8c4-6750-4b4d-9f2b-1f407d92a5a3)
 &nbsp;
 
-5. Send a request to the server using `telnet`, a web browser, or any other application layer protocol:
+5. Start the client by compiling all files and running `ClientDriver.java`, as follows:
+```
+cd client
+javac *.java
+java ClientDriver -i ../files/<input_file>
+      [-o <output_file>]
+      [-c <service_code>]
+      [-b <buffer_size>]
+      [-p <port_number>]
+      [-s <server_name>]
+```
 <br></br>
-![request](https://github.com/prempreetbrar/TCPWebServer/assets/89614923/44472d33-d81a-4b1a-a282-0cf861a3d654)
-
-
+![client](https://github.com/prempreetbrar/TCPFileProcessor/assets/89614923/3c9fc50d-1fba-4bb0-baa4-0e7de8a645f7)
