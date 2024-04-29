@@ -3,7 +3,7 @@
 A program that establishes a TCP connection with a remote server, sends a local file to the server for processing, and receives
 and stores the processed file in the local file system. Watch a GIF of me interacting with it below!
 
-![client](https://github.com/prempreetbrar/TCPFileProcessor/assets/89614923/4634f5d6-241c-44a0-a310-47235c4fd62f)
+![client](https://github.com/prempreetbrar/TCPFileProcessor/assets/89614923/1533699c-6171-4574-9650-a74570923d5b)
 &nbsp;
 
 ## Features
@@ -78,4 +78,4 @@ java ClientDriver -i ../files/<input_file>
       [-s <server_name>]
 ```
 <br></br>
-![client](https://github.com/prempreetbrar/TCPFileProcessor/assets/89614923/3c9fc50d-1fba-4bb0-baa4-0e7de8a645f7)
+![client](https://github.com/prempreetbrar/TCPFileProcessor/assets/89614923/c89d5a62-b4e4-4d9e-8b4c-aad27383d9f8)
