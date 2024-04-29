@@ -41,7 +41,7 @@ program; the client closes its side of the connection after the entire file is s
 ## If you want to start up the project on your local machine:
 1. Download the code as a ZIP:
 <br></br>
-![download](https://github.com/prempreetbrar/TCPWebServer/assets/89614923/291dc4a0-fe63-40b8-a70a-8bd3f987d5b6)
+
 &nbsp;
 
 2. Unzip the code:
