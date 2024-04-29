@@ -23,15 +23,7 @@ and stores the processed file in the local file system. Watch a GIF of me intera
 In the above image, we see that the client can still receive data from the server even after sending a segment with `FIN = 1`. This is exactly what is happening in our 
 program; the client closes its side of the connection after the entire file is sent, but continues reading the processed file from the server. 
   
-- 
-
-- To prevent non-responsive clients from hogging server resources, if the server does not receive an HTTP message from the
-  client after the initial 3-way handshake, the server closes the connection and sends an error message with status code `408`. Note that
-  this only occurs if the client is connecting using `telnet` or certain other application layer protocols. With something like a browser, the
-  handshake is automatically (ie. _implicitly_) followed by an HTTP request.
-- After server is shutdown, waits reasonable amount of time for current requests to be serviced before terminating.
-- If the server can recover from exceptions (ie. the exception only affected a worker thread), then the server continues with normal execution. Otherwise,
-  it terminates. 
+- Client uses a parallel rather than serial design to prevent deadlock; with a serial design, the client would need to transmit its entire file before reading from the server. For very large files, the client would not yet read anything from its `Socket`; the `Socket` buffer would quickly fill up with the server's processed data. This would then block the server when it calls `write()` on the `Socket` output stream (this is the flow control of TCP and is how the `Socket` is designed); a blocked server would not read from its `Socket` input stream, which then blocks the client. Both the client and server would be blocked, leading to a deadlock. The client uses two threads to work around this; one for sending data, and another for reading processed data.
 
 ## Usage/Limitations
 - The root directory of the web server, where the objects are located, is specified as a command line input parameter. If the object path in
