@@ -17,7 +17,7 @@ and stores the processed file in the local file system. Watch a GIF of me intera
 - The server continues reading from its `Socket` input stream by repeatedly calling the `read()` method until it returns `-1` (indicating the stream is
   at the end of the file). The client signals to the server that transmission is complete (allowing it to stop its reading) by calling `shutdownOutput()`
   to close its side of the connection. The **client can no longer send but can still read the processed data** coming from the server (analogous to sending a segment
-  with `FIN = 1`; the client state goes from `ESTAB` -> `FIN_WAIT1` -> `FIN_WAIT2`. See the image below:
+  with `FIN = 1`); the client state goes from `ESTAB` -> `FIN_WAIT1` -> `FIN_WAIT2`. See the image below:
 
 ![image](https://github.com/prempreetbrar/TCPFileProcessor/assets/89614923/10d15ddb-589d-4544-b915-8aa9eb05ef36)
 In the above image, we see that the client can still receive data from the server even after sending a segment with `FIN = 1`. This is exactly what is happening in our 
@@ -26,26 +26,17 @@ program; the client closes its side of the connection after the entire file is s
 - Client uses a parallel rather than serial design to prevent deadlock; with a serial design, the client would need to transmit its entire file before reading from the server. For very large files, the client would not yet read anything from its `Socket`; the `Socket` buffer would quickly fill up with the server's processed data. This would then block the server when it calls `write()` on the `Socket` output stream (this is the flow control of TCP and is how the `Socket` is designed); a blocked server would not read from its `Socket` input stream, which then blocks the client. Both the client and server would be blocked, leading to a deadlock. The client uses two threads to work around this; one for sending data, and another for reading processed data.
 
 ## Usage/Limitations
-- The root directory of the web server, where the objects are located, is specified as a command line input parameter. If the object path in
-  the `GET` request is `/object-path`, then the file containing the object is located on the absolute path `server-root/object-path` in the file
-  system, where `server-root` is the root directory of the web server.
-- `-p <port_number>` specifies the server's port; default is `2025`
-- `-t <idle_connection_timeout>` specifies the time after which the server closes the TCP connection in **milli-seconds**; default is `0` (which means infinity,
-   ie. idle connections are not closed)
-- `-r <server-root>` is the root directory of the web server (where all its HTTP objects are located); default is the current directory (directory in which program
-   is ran)
-- `quit` is typed in the system terminal to shut the server down. 
-- Sends responses with HTTP version `HTTP/1.1`; only returns responses with the following status codes/phrases:
-  ```
-  200 OK
-  400 Bad Request
-  404 Not Found
-  408 Request Timeout
-  ```
-- Assumes all header lines in the HTTP request are formatted correctly; only an error in the HTTP request line can trigger a `400 Bad Request` error. A
-  properly formatted request line consists of three _mandatory_ parts which are separated by one or more spaces, as follows: `GET /object-path HTTP/1.1`.
-  The command `GET` and protocol `HTTP/1.1` are fixed, while the `object-path` is optional. If no `object-path` is provided, _ie._ the request only specifies "/",
-  then `index.html` is assumed by default. 
+### When Running the Client:
+- `-i <input_file>` specifies the name of the file to be processed by the server; **REQUIRED**
+- `-o <output_file>` specifies the name of the processed output file; defaults to `input_file.out`
+- `-c <service_code>` specifies the service code requested from the server; `0` is `ECHO`, `1` is `GZIP`, `2` is `UNZIP`. Defaults to `1 (GZIP)`.
+- `-b <buffer_size>` specifies the buffer size in _bytes_ used for writing the file to the server and reading processed data. Defaults to `10000`.
+- `-p <port_number>` specifies the server's port; default is `2025`.
+- `-s <server_name>` specifies the server's hostname; default is `localhost`.
+
+### When Running the Server:
+- `-p <port_number>` specifies the server's port; default is `2025`; **the `-p` flags should match when running both the client and server. Otherwise, the client will be unable to connect.**
+- `-b <buffer_size>` specifies the buffer size (in bytes) used at the server for read/write operations; default is `1000`. 
 
 ## If you want to start up the project on your local machine:
 1. Download the code as a ZIP:
